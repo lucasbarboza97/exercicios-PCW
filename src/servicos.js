@@ -12,7 +12,7 @@ export default [
         duracaoEmMinutos: 20
     },
     {
-        codigo: "S0004",
+        codigo: "S0003",
         descricao: "Balanceamento de 1 roda",
         preco: 15.00,
         duracaoEmMinutos: 5

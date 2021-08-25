@@ -22,7 +22,7 @@ section {
   margin: 0 1rem;
   border: 2px solid #000000;
 }
-.produto-venda {
+.produtoVenda {
   display: flex;
   flex-direction: row;
 }

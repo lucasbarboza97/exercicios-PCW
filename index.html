@@ -9,27 +9,27 @@
 <body>
 <header class="header"><h1>Vendas</h1></header>
 <body class="body">
-    <section class="produto-venda">
+    <section class="produtoVenda">
         <div class="area">
             <div>
                 <label for="quantidade">Quantidade:</label>
                 <input id="quantidade" type="number" value="1">
                 <label for="codigo">Código:</label>
                 <input id="codigo">
-                <button>Adicionar</button>
+                <button id="btnAdd">Adicionar</button>
             </div>
             <div>
                 <h1 id="itemVenda">Descrição - R$000,00</h1>
-                <span id="duracaoServicoVenda">Duração: N/A</span>
+                <p id="duracaoServicoVenda">Duração: N/A</p>
             </div>
         </div>    
         <div class="area">
-            <img src="./img/pneu-1.png">
+            <img id="imagem">
         </div>
     </section>
     
     <section class="tabela">
-        <table>
+        <table id="pedidoTabela">
             <thead>
                 <tr>
                     <th>Código</th><th>Descrição</th><th>Preço (R$)</th><th>Qtde.</th><th>Subtotal (R$)</th><th></th>
@@ -37,7 +37,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>S0001</td> <td>Troca Pneu</td> <td>25,00</td> <td><input type="number"></td> <td>50,00</td> <td><button>Remover</button></td>
+                    <!-- <td>S0001</td> <td>Troca Pneu</td> <td>25,00</td> <td><input type="number"></td> <td>50,00</td> <td><button>Remover</button></td> -->
                 </tr>
             </tbody>
         </table>
