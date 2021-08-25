@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt" >
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/index.css" rel="stylesheet">
+</head>
+<body>
+<header class="header"><h1>Vendas</h1></header>
+<body class="body">
+    <section class="produto-venda">
+        <div class="area">
+            <div>
+                <label for="quantidade">Quantidade:</label>
+                <input id="quantidade" type="number" value="1">
+                <label for="codigo">Código:</label>
+                <input id="codigo" value="P0001">
+                <button>Adicionar</button>
+            </div>
+            <div class="descricao">
+                <h1>Pneu Acme 150 50 R15 - R$300,00</h1>
+                <span>Duração: N/A</span>
+            </div>
+        </div>    
+        <div class="area">
+            <img src="./img/pneu-1.png" alt="Pneu">
+        </div>
+    </section>
+    
+    <section class="tabela">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th><th>Descrição</th><th>Preço (R$)</th><th>Qtde.</th><th>Subtotal (R$)</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>S0001</td> <td>Troca Pneu</td> <td>25,00</td> <td><input type="number"></td> <td>50,00</td> <td><button>Remover</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="total">
+        <span>Subtotal (R$): </span>
+        <span>50,00</span>
+        <label for="">Desconto:<input>% = R$ 0,00</label>
+        <span>Total (R$)</span>
+        <span>50,00</span>
+    </section>
+
+</body>
+
+<footer class="footer">
+    <button>Concluir</button>
+</footer>
+
+<script src="index.js" type="module">
+
+</script>
+
+</body>
+
+</html>

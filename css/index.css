@@ -1,0 +1,33 @@
+img {
+    min-width: 150px;
+}
+header {
+    margin: 0 40px;
+}
+footer {
+    display: flex;
+    justify-content: flex-end;
+}
+section {
+    margin: 40px 40px;
+}
+
+  .body {
+    color: #000000;
+    margin: 50px 120px;
+    border: 1px solid #000000;
+    padding: 1rem;
+  }
+  .area:last-child {
+    margin: 0 1rem;
+    border: 2px solid #000000;
+  }
+  .produto-venda {
+    display: flex;
+    flex-direction: row;
+  }
+  .tabela {
+      border-top: 1px solid black;
+      border-bottom: 1px solid black;
+  }
+
