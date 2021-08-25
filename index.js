@@ -13,23 +13,29 @@ import servicos from "./src/servicos.js";
 // console.log(p);
 
 // const iv = new ItemVenda();
-// iv.quantidade = 0;
-// // iv.quantidade = 10;
+// iv.quantidade = 10;
 // const total = iv.subtotal(p.preco);
+// console.log(total);
 
 const codigo = document.getElementById('codigo');
 codigo.addEventListener('blur', function(event) {
-    for (const p of produtos) {
-        if(codigo.value === p.codigo) {
-            console.log('é PRODUTO',p.codigo,codigo.value);
-            return;
+    if(codigo.value == ''){
+        alert('Digite um código.');
+    }else{
+        for (const p of produtos) {
+            if(codigo.value === p.codigo) {
+                itemVenda.innerText = p.descricao + ' - R$' + p.preco.toFixed(2);
+                duracaoServicoVenda.innerText = 'Duração: N/A';
+                return ;
+            }
         }
-    }
-    for (const s of servicos) {
-        if(codigo.value === s.codigo){
-            console.log('é SERVICO',s.codigo,codigo.value);
-            return;
+        for (const s of servicos) {
+            if(codigo.value === s.codigo){
+                itemVenda.innerText = s.descricao + ' - R$' + s.preco.toFixed(2);
+                duracaoServicoVenda.innerText = 'Duração: ' + s.duracaoEmMinutos + ' minutos';
+                return;
+            }
         }
+        alert('O código "' +  codigo.value + '", não é um produto ou servico para venda.');
     }
-    alert('O código ' +  codigo.value + ' não é um serviço ou produto para a venda.')
 })

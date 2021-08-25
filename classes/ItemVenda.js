@@ -1,4 +1,5 @@
 import { DominioException } from "./DominioException.js";
+import { Comercializavel } from "./Comercializavel.js";
 
 export class ItemVenda {
     
@@ -8,7 +9,7 @@ export class ItemVenda {
         this.quantidade = quantidade;
     }
 
-    subtotal () {
+    subtotal (preco) {
         return this._quantidade * preco;
     }
 
