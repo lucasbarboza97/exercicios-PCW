@@ -1,4 +1,5 @@
 import { DominioException }  from "./DominioException.js";
+// import { ItemVenda }  from "./ItemVenda.js";
 
 export class Comercializavel {
     
