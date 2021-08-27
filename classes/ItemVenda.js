@@ -1,3 +1,8 @@
+/**  Imports
+ * 
+ * 
+ * @author Lucas Barboza
+*/
 import { DominioException } from "./DominioException.js";
 
 /**
@@ -23,6 +28,10 @@ export class ItemVenda {
         return this.comercializavel.preco * this.quantidade;
     };
 
+    get preco (){return this.comercializavel.preco}
+    get codigo (){return this.comercializavel.codigo}
+    get estoque (){return this.comercializavel.estoque}
+    get descricao (){return this.comercializavel.descricao}
 
     get comercializavel (){return this._comercializavel};
     set comercializavel (comercializavel){this._comercializavel = comercializavel};
@@ -31,7 +40,7 @@ export class ItemVenda {
     set quantidade (quantidade){
         if(quantidade<1){
             inputQuantidade.value = 1;
-            throw new DominioException ("Deve ter no mínimo 1 item para a venda.");
+            throw new DominioException ("Deve ter no mínimo 1 item para a venda. Dentro de item venda");
         }
         this._quantidade = quantidade;
     };

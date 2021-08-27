@@ -1,3 +1,8 @@
+/**  Imports
+ * 
+ * 
+ * @author Lucas Barboza
+*/
 import { DominioException } from "./DominioException.js";
 
 
@@ -20,25 +25,29 @@ export class Venda {
         this.descontoValor = descontoValor;
     }
 
+    addArray (itemVenda) {
+        this.arrayItemVenda.push(itemVenda);
+    }
+
 
     removeItem(i) {
         this.arrayItemVenda.splice(i, 1);
     }
 
-
-    addArray (itemVenda) {
-        // const item = this.arrayItemVenda.some((element) => {
-        //     return (element.comercializavel.codigo === itemVenda.comercializavel.codigo);
-        // });
-        // if(item){
-        //     throw new DominioException("Produto ja foi inserido.");
-        // }
-        this.arrayItemVenda.push(itemVenda);
+    limpaVenda(){
+        this.arrayItemVenda = [];
+        this.descontoPercentual = 0;
+        this.descontoValor = 0;
     }
 
+
+
+
     subtotal () {
-        var soma;
-        this.arrayItemVenda.forEach((element) => {soma += element.comercializavel.subtotal();});
+        var soma = 0;
+        this.arrayItemVenda.forEach((e) => {
+            soma += e.comercializavel.subtotal();
+        });
         return soma;
     }
 

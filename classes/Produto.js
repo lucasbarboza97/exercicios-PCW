@@ -1,3 +1,8 @@
+/**  Imports
+ * 
+ * 
+ * @author Lucas Barboza
+*/
 import { Comercializavel } from "./Comercializavel.js";
 
 export class Produto extends Comercializavel {

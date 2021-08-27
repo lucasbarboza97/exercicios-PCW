@@ -1,3 +1,8 @@
+/**  Imports
+ * 
+ * 
+ * @author Lucas Barboza
+*/
 import { Produto } from "./classes/Produto.js";
 import { Servico } from "./classes/Servico.js";
 import { ItemVenda } from "./classes/ItemVenda.js";
@@ -5,156 +10,250 @@ import { Venda } from "./classes/Venda.js";
 import { DominioException } from "./classes/DominioException.js";
 import produtos from "./src/produtos.js";
 import servicos from "./src/servicos.js";
+import { enviarVenda } from "./src/envio-venda.js";
 
-// Variáveis globais
-var objItemVenda = {};
-var eProduto = false;
-
-// Exibe a descrição do pedido de acordo com o código digitado.
-const codigo = document.getElementById('codigo');
-codigo.addEventListener('blur', function() {
-    descreveComercializavel ();
-});
-
-// Botão adcionar item na tabela.
-document.getElementById('btnAdd').onclick = function(event) {
-    btnAdicionar(event);
-}
 
 /**
- *                                                      Funções auxiliares.
- * -----------------------------------------------------------------------------------------------------------------------------------
- * @function btnAdicionar insere uma novo item venda. Instância um Comercializável e um Item Venda. Além de calcular o total da venda
- * @function descreveComercializavel insere no HTML o Serviço ou Produto de acordo com o código digitado. 
- *  */ 
+ * Variáveis globais
+ */
+var selected_item = null;
+var data = [];
+var comercializavel = null;
 
-function btnAdicionar (){
+data = data.concat(produtos, servicos);
+
+const inputQuantidade = document.getElementById("inputQuantidade");
+const inputCodigo = document.getElementById("codigo");
+const imagem = document.getElementById("imagem");
+const itemVenda = document.getElementById("itemVenda");
+const duracao = document.getElementById("duracaoServicoVenda");
+const buttonAdiciona = document.getElementById("btnAdd");
+const bodyRow = document.getElementById("tBodyTabela");
+const inputDesconto = document.getElementById("inputDesconto");
+const buttonConcluir = document.getElementById("btnConcluir");
+
+const venda = new Venda();
+
+/** 
+ *  Eventos
+ */
+
+inputCodigo.addEventListener("blur", (event) => {
     try {
-        const qtd = document.getElementById('inputQuantidade').value;
-        const pedidoTabela = document.getElementById('pedidoTabela');
-        const tamanhoTabela = pedidoTabela.rows.length;
-        const row = pedidoTabela.insertRow(tamanhoTabela);
-        const subTotalVenda = document.getElementById('subTotalVenda');
-        const venda = new Venda();
-        let comercializavel = null;
-        
-        const cellCodigo = row.insertCell(0);
-        cellCodigo.innerHTML = objItemVenda.codigo;
+        carregaDescricaoItem (event);
+    } catch (e) {
+        alert(e.message);
+    }
+});
 
-        const cellDescricao = row.insertCell(1);
-        cellDescricao.innerHTML = objItemVenda.descricao;
+buttonAdiciona.addEventListener("click", () => {
+    try {
+        btnAdd ();
+    } catch (e) {
+        alert(e.message);
+    } 
+});
 
-        const cellPreco = row.insertCell(2);
-        cellPreco.innerHTML = objItemVenda.preco.toFixed(2).replace(".",",");
+try {
+    exibeDadosVenda();
+} catch (e) {
+    alert(e.message);
+}
 
-        const cellQuantidade = row.insertCell(3);
-        const inputQtdTD = cellQuantidade.appendChild(document.createElement('input'));
-        inputQtdTD.type='number';
-        inputQtdTD.value = qtd;
 
-        const cellSubtotal = row.insertCell(4);
+inputDesconto.addEventListener("blur", () => {
+    try {
+        desconto();
+    } catch (e) {
+        alert(e.message);
+    }
+});
 
-        if (eProduto) {
-            const produto = new Produto(objItemVenda.codigo, objItemVenda.descricao, objItemVenda.preco, objItemVenda.imagem, objItemVenda.estoque);
-            comercializavel = new ItemVenda(inputQtdTD.value, produto);
-            cellSubtotal.textContent = comercializavel.subtotal().toFixed(2).replace(".",",");
-        } else {
-            const servico = new Servico(objItemVenda.codigo, objItemVenda.descricao, objItemVenda.preco, objItemVenda.duracaoEmMinutos);
-            comercializavel = new ItemVenda(inputQtdTD.value, servico);
-            cellSubtotal.textContent = comercializavel.subtotal().toFixed(2).replace(".",",");
-  
+
+buttonConcluir.addEventListener("click", () => {
+    try {
+        btnConcluir();
+    } catch (e) {
+        alert(e.message);
+    }
+});
+
+
+
+/** Funções auxiliares
+ * 
+ * @function carregaDescricaoItem (event) Descreve a descrição do pedido, de acordo com o código digitado. E recebe um evento de blur do input do código.
+ * @function btnAdd() Adciona uma venda, de acordo com o código digitado.
+ * @function addLinhaTabela() É chamada dentro da função anterior para adcionar itens na tabela do HTML.
+ * @function desconto() Calcula o desconto para exibir no section de vendas.
+ * @function exibeDadosVenda() Exibe o total da venda e o seu subtotal já calculado com desconto.
+ * @function btnConcluir() Simula uma compra, e limpa os dados do HTML.
+ * @function limpaHeader() e @function limpaTabela(), são chamadas dentro do butão concluir para limpeza da tabela.
+ * @function btnRemover(tr) recebe uma tabela  e é chamado pelo clique do botão remover de cada item na tabela e remove o item.
+ * @function alteraQtdItemTabela é chamado pelo evento blur de cada input dos itens adicionado na tabela do HTML, se caso alterado a sua quantidade é executado.
+ * 
+ */
+
+function carregaDescricaoItem(event) {
+    const codigo = event.target.value.toUpperCase();
+    selected_item = data.find((item) => {
+        return item.codigo === codigo;    
+    });
+
+    if (selected_item) {
+        itemVenda.textContent = `${selected_item.descricao}  -  R$ ${selected_item.preco.toFixed(2).replace(".",",")}`;
+        if (selected_item.codigo.indexOf("S") !== -1) {
+            imagem.hidden = true;
+            duracao.innerText = `Duração: ${selected_item.duracaoEmMinutos} Minutos`;
+        } else if (selected_item.codigo.indexOf("P") !== -1) {
+            imagem.hidden = false;
+            imagem.src = `./img/${selected_item.imagem}`;
+            duracao.innerText = "Duração: N/A";
         }
+    } else {
+        itemVenda.textContent = "Não encontrado";
+        duracao.innerText = "";
+        imagem.src = '';;
+    }
+}
 
+function btnAdd() {
+    try {
+        if (selected_item) {
+            const qtd = inputQuantidade.value;
+            if (qtd > selected_item.estoque) {
+                inputQuantidade.value = selected_item.estoque;
+                throw new DominioException(`Quantidade indisponível em estoque. Disponível: ${selected_item.estoque}.`);
+            }
 
+            if (selected_item.codigo.indexOf("P") !== -1) {
+                const produto = new Produto(selected_item.codigo,selected_item.descricao,selected_item.preco,selected_item.imagem,selected_item.estoque);
+                comercializavel = new ItemVenda(qtd, produto);
+            } else {
+                const servico = new Servico(selected_item.codigo,selected_item.descricao,selected_item.preco,selected_item.duracaoEmMinutos);
+                comercializavel = new ItemVenda(qtd, servico);
+            }
 
-        inputQtdTD.addEventListener("blur", () => {
-            const validate = !objItemVenda.estoque || objItemVenda.estoque > inputQtdTD.value;
-            if (!validate) {
-                alert("Quantidade indisponível em estoque. Disponível: " + objItemVenda.estoque);
-                inputQtdTD.value = objItemVenda.estoque;
-                comercializavel.quantidade = inputQtdTD.value;
-                cellSubtotal.textContent = comercializavel.subtotal().toFixed(2).replace(".",",");
-            } else if (inputQtdTD.value < 1){
-                alert('O mínimo da compra dever 1');
-                inputQtdTD.value = 1;
-                comercializavel.quantidade = inputQtdTD.value;
-                cellSubtotal.textContent = comercializavel.subtotal().toFixed(2).replace(".",",");
-            } 
-            else {
-                comercializavel.quantidade = inputQtdTD.value;
-                cellSubtotal.textContent = comercializavel.subtotal().toFixed(2).replace(".",",");
-            }   
-        });
+            venda.addArray(new ItemVenda(qtd, comercializavel));
 
-        venda.addArray(new ItemVenda(inputQtdTD.value, comercializavel));
-        subTotalVenda.innerText = venda.subtotal();
-
-        const cellRemover = row.insertCell(5);
-        const buttonRemover = cellRemover.appendChild(document.createElement('button'));
-        buttonRemover.textContent ='Remover';
-        buttonRemover.id ='btnRemover';
-
-        buttonRemover.addEventListener('click', () => {
-            const index = row.rowIndex - 1;            
-            venda.removeItem(index);
-            row.remove();
-            desconto(venda);    
-            exibeVenda();
-        });
-    } catch(e) {
+            addLinhaTabela();
+            desconto();
+            exibeDadosVenda();
+        } else {
+            throw new DominioException("Selecione um produto ou serviço válido");
+        }
+    } catch (e) {
         alert(e.message);
     }
 }
 
-function descreveComercializavel () {
-    if(codigo.value == ''){
-        alert('Digite um código.');
-    }else{
-        for (const p of produtos) {
-            if(codigo.value === p.codigo) {
-                itemVenda.innerText = p.descricao + ' - R$' + p.preco.toFixed(2).replace(".",",");
-                imagem.src = './img/' + p.imagem;
-                duracaoServicoVenda.innerText = 'Duração: N/A';
-                objItemVenda = p;
-                eProduto = true;
-                return;
-            }
-        }
-        for (const s of servicos) {
-            if(codigo.value === s.codigo){
-                itemVenda.innerText = s.descricao + ' - R$' + s.preco.toFixed(2).replace(".",",");
-                imagem.src = '';
-                duracaoServicoVenda.innerText = 'Duração: ' + s.duracaoEmMinutos + ' minutos';
-                objItemVenda = s;
-                eProduto = false;
-                return;
-            }
-        }
-        alert('O código "' +  codigo.value + '", não é um produto ou servico para venda.');
-    }
+function addLinhaTabela() {
+    const tr = document.createElement("tr");
+
+    const codTd = document.createElement("td");
+    const descTd = document.createElement("td");
+    const precoTd = document.createElement("td");
+    const qtdTd = document.createElement("td");
+    const inputQtdList = document.createElement("input");
+    const subTotalTd = document.createElement("td");
+    const removeTd = document.createElement("td");
+    const buttonRemove = document.createElement("button");
+
+
+    codTd.innerText = comercializavel.codigo;
+    descTd.innerText = comercializavel.descricao;
+    precoTd.innerText = comercializavel.preco.toFixed(2).replace(".",",");
+
+    inputQtdList.id = "input-qtd-list";
+    inputQtdList.type = "number";
+    inputQtdList.min = "1";
+    inputQtdList.value = comercializavel.quantidade;
+    inputQtdList.addEventListener("blur", () => {
+        alteraQtdItemTabela(inputQtdList,tr,subTotalTd);
+    });
+
+    subTotalTd.innerText = comercializavel.subtotal().toFixed(2).replace(".",",");;
+
+    buttonRemove.type = "button";
+    buttonRemove.textContent = "Remover";
+    buttonRemove.addEventListener("click", () => {
+        btnRemover(tr);
+    });
+    
+    tr.appendChild(codTd);
+    tr.appendChild(descTd);
+    tr.appendChild(precoTd);
+    qtdTd.appendChild(inputQtdList);
+    tr.appendChild(qtdTd);
+    tr.appendChild(subTotalTd);
+    removeTd.appendChild(buttonRemove);
+    tr.appendChild(removeTd);
+    bodyRow.append(tr);
 }
 
-function desconto(venda) {
-    const spamDesconto = document.getElementById("desconto");
+function desconto() {
+    const textDesconto = document.getElementById("inputDesconto");
     const value = inputDesconto.value;
     if (value > -1 && value <= 15) {
-      venda.concederDesconto(value);
-      spamDesconto.textContent = venda.descontoValor;
+        venda.concederDesconto(value);
+        textDesconto.textContent = venda.descontoValor;
     } else {
-      alert("Valor máximo de desconto é 15%");
-      inputDesconto.value = 0;
-      spamDesconto.textContent = "0";
-      venda.concederDesconto(0);
+        alert("Valor máximo de desconto é 15%");
+        inputDesconto.value = 0;
+        textDesconto.textContent = "0";
+        venda.concederDesconto(0);
     }
-    exibeVenda();
+    exibeDadosVenda();
 }
 
-function exibeVenda() {
+function exibeDadosVenda() {
     const subtotal = document.getElementById("subTotalVenda");
-    subtotal.textContent = venda.subtotal();
-
     const total = document.getElementById("total");
-    total.textContent = venda.total();
+
+    subtotal.textContent = venda.subtotal().toFixed(2).replace(".",",");;
+    total.textContent = venda.total().toFixed(2).replace(".",",");;
 }
 
+function btnConcluir() {
+    enviarVenda(venda);
+    venda.limpaVenda();
+    limpaHeader();
+    comercializavel = null;
+    exibeDadosVenda();
+    desconto();
+    limpaTabela();
+}
 
+function limpaHeader() {
+    inputQuantidade.value = "1";
+    inputCodigo.value = "";
+    itemVenda.textContent = "Descrição - R$000,00";
+    duracao.innerText = "Duração: N/A";
+    imagem.src = '';
+}
+
+function limpaTabela() {
+    bodyRow.innerHTML = "";
+}
+
+function btnRemover(tr) {
+    const index = tr.rowIndex - 1;
+    venda.removeItem(index);
+    desconto();
+    tr.remove();
+    exibeDadosVenda();
+}
+
+function alteraQtdItemTabela(inputQtdList,tr,subTotalTd){
+    if (!(!comercializavel.estoque || comercializavel.estoque > inputQtdList.value)) {
+        alert(`Quantidade indisponível em estoque. Disponível: ${comercializavel.estoque}.`);
+        inputQtdList.value = comercializavel.estoque;
+    }
+
+    const index = tr.rowIndex - 1;
+    comercializavel.quantidade = inputQtdList.value;
+    venda[index] = comercializavel;
+    desconto();
+    subTotalTd.innerText = comercializavel.subtotal().toFixed(2).replace(".",",");
+    exibeDadosVenda(venda);
+}
