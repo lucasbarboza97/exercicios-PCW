@@ -30,6 +30,7 @@ export class ItemVenda {
     get quantidade () {return this._quantidade};
     set quantidade (quantidade){
         if(quantidade<1){
+            inputQuantidade.value = 1;
             throw new DominioException ("Deve ter no mínimo 1 item para a venda.");
         }
         this._quantidade = quantidade;

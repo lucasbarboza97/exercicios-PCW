@@ -10,8 +10,10 @@ import { DominioException } from "./DominioException.js";
 
 export class Venda {
     arrayItemVenda = [];
+    arraySubTotalItemVenda = [];
     _descontoPercentual = 0.0;
     _descontoValor = 0.0;
+    total = [];
 
 
     constructor (descontoPercentual,descontoValor){
@@ -20,20 +22,29 @@ export class Venda {
     }
 
 
+    removeItem(i) {
+        this.arrayItemVenda.splice(i, 1);
+    }
+
+
     addArray (itemVenda) {
-        const item = this.arrayItemVenda.some((element) => {
-            return (element.comercializavel.codigo === itemVenda.comercializavel.codigo);
-        });
-        if(item){
-            throw new DominioException("Produto ja foi inserido.");
-        }
+        // const item = this.arrayItemVenda.some((element) => {
+        //     return (element.comercializavel.codigo === itemVenda.comercializavel.codigo);
+        // });
+        // if(item){
+        //     throw new DominioException("Produto ja foi inserido.");
+        // }
         this.arrayItemVenda.push(itemVenda);
     }
 
-    subtotal () {   
-    var soma = 0;
-    this.arrayItemVenda.forEach((element) => {soma += element.comercializavel.subtotal();});
-    return soma;
+    subtotal () {
+
+        this.arraySubTotalItemVenda.push(arrayItemVenda.subtotal());
+        this.arraySubTotalItemVenda.forEach((element) => {
+            soma += element;
+        })
+        // this.arrayItemVenda.forEach((element) => {this.total += element.comercializavel.subtotal();});
+        return this.total;
     }
 
     concederDesconto(percentual){
@@ -44,9 +55,6 @@ export class Venda {
     total () {
         return this.subtotal() - this.subtotal() * (this.descontoPercentual / 100);
     }
-
-
-
 
 
 

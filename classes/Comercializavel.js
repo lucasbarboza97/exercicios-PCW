@@ -17,7 +17,9 @@ export class Comercializavel {
     }
 
     get codigo () {return this._codigo};
-    set codigo (codigo){this._codigo = codigo};
+    set codigo (codigo){
+        this._codigo = codigo
+    };
 
     get descricao () {return this._descricao};
     set descricao (descricao){this._descricao = descricao};
