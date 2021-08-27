@@ -13,7 +13,6 @@ export class Venda {
     arraySubTotalItemVenda = [];
     _descontoPercentual = 0.0;
     _descontoValor = 0.0;
-    total = [];
 
 
     constructor (descontoPercentual,descontoValor){
@@ -38,13 +37,9 @@ export class Venda {
     }
 
     subtotal () {
-
-        this.arraySubTotalItemVenda.push(arrayItemVenda.subtotal());
-        this.arraySubTotalItemVenda.forEach((element) => {
-            soma += element;
-        })
-        // this.arrayItemVenda.forEach((element) => {this.total += element.comercializavel.subtotal();});
-        return this.total;
+        var soma;
+        this.arrayItemVenda.forEach((element) => {soma += element.comercializavel.subtotal();});
+        return soma;
     }
 
     concederDesconto(percentual){
